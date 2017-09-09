@@ -55,3 +55,59 @@ app.get('/recipes', (req, res) => {
 app.listen(process.env.PORT || 8080, () => {
   console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
 });
+
+
+
+// My Code for POST /endpoint for Recipes
+app.post('/recipes', jsonParser, (req, res) => {
+  // ensure `name` and `ingredients` are in req body
+  // using Recipes.create(), see line 57 of models.js
+  // for parameters `name` and `ingredients`
+  let requiredFields = ['name', 'ingredients'];
+
+  for (let i = 0; i < requiredFields.length; i++) {
+    let field = requiredFields[i];
+
+    if (!(field in req.body)) {
+      let message = `Missing \`${field}\` in request body`;
+      console.log(message);
+      return res.status(400).send(message);
+    }
+  }
+
+  let item = Recipes.create(req.body.name, req.body.ingredients);
+  res.status(201).json(item);
+});
+
+
+
+/* Thinkful's solution
+
+// when new recipe added, ensure has required fields. if not,
+// log error and return 400 status code with hepful message.
+// if okay, add new item, and return it with a status 201.
+app.post('/recipes', jsonParser, (req, res) => {
+  // ensure `name` and `ingredients` are in request body
+  const requiredFields = ['name', 'ingredients'];
+  for (let i=0; i<requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  const item = Recipes.create(req.body.name, req.body.ingredients);
+  res.status(201).json(item);
+});
+
+
+app.get('/recipes', (req, res) => {
+  res.json(Recipes.get());
+})
+
+app.listen(process.env.PORT || 8080, () => {
+  console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+});
+
+*/
